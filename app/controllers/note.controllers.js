@@ -1,115 +1,104 @@
-const Note = require('../models/note.model.js');
+const logger = require('../../winstonLogger');
+const noteService = require('../service/note.service');
 
-// Create and Save a new Note
-exports.create = (req, res) => {
-    // Validate request
-    if(!req.body.content) {
-        return res.status(400).send({
-            message: "Note content can not be empty"
-        });
-    }
-     // Create a Note
-     const note = new Note({
-        title: req.body.title || "Untitled Note", 
-        content: req.body.content
-    });
-
-    // Save Note in the database
-    note.save()
-    .then(data => {
-        res.send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while creating the Note."
-        });
-    });
-};
-
-// Retrieve and return all notes from the database.
-exports.findAll = (req, res) => {
-    Note.find()
-    .then(notes => {
-        res.send(notes);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving notes."
-        });
-    });
-};
-
-// Find a single note with a noteId
-exports.findOne = (req, res) => {
-    Note.findById(req.params.noteId)
-    .then(note => {
-        if(!note) {
-            return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
-            });            
-        }
-        res.send(note);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error retrieving note with id " + req.params.noteId
-        });
-    });
-};
-
-// Update a note identified by the noteId in the request
-exports.update = (req, res) => {
-    // Validate Request
-    if(!req.body.content) {
-        return res.status(400).send({
-            message: "Note content can not be empty"
-        });
-    }
-
-    // Find note and update it with the request body
-    Note.findByIdAndUpdate(req.params.noteId, {
-        title: req.body.title || "Untitled Note",
-        content: req.body.content
-    }, {new: true})
-    .then(note => {
-        if(!note) {
-            return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
+class noteOperations {
+    // Create and Save a new Note
+    create = (req, res) => {
+        noteService.createANewNote(req.body.title || "Untitled Note", req.body.content)
+            .then(data => {
+                logger.info("New Entry Added.");
+                res.send(data);
+            }).catch(err => {
+                logger.error("Internal Server Error.");
+                res.status(500).send({
+                    message: err.message || "Some error occurred while creating the Note."
+                });
             });
-        }
-        res.send(note);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error updating note with id " + req.params.noteId
-        });
-    });
-};
+    };
 
-// Delete a note with the specified noteId in the request
-exports.delete = (req, res) => {
-    Note.findByIdAndRemove(req.params.noteId)
-    .then(note => {
-        if(!note) {
-            return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
+    // Retrieve and return all notes from the database.
+    findNotes = (req, res) => {
+        noteService.findNotes()
+            .then(notes => {
+                logger.info(" Retrieving all notes from the database.");
+                res.send(notes);
+            }).catch(err => {
+                logger.error("Internal Server Error.");
+                res.status(500).send({
+                    message: err.message || "Some error occurred while retrieving notes."
+                });
             });
-        }
-        res.send({message: "Note deleted successfully!"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
-            });                
-        }
-        return res.status(500).send({
-            message: "Could not delete note with id " + req.params.noteId
-        });
-    });
-};
+    };
+
+    // Find a single note with a noteId
+    findOne = (req, res) => {
+        noteService.findOneNote(req.params.noteId)
+            .then(note => {
+                if (!note) {
+                    return res.status(404).send({
+                        message: "Note not found with id " + req.params.noteId
+                    });
+                }
+                res.send(note);
+            }).catch(err => {
+                if (err.kind === 'ObjectId') {
+                    logger.error("Error 404: Not found.");
+                    return res.status(404).send({
+                        message: "Note not found with id " + req.params.noteId
+                    });
+                }
+                logger.error("Error 500: Internal Server Error.");
+                return res.status(500).send({
+                    message: "Error retrieving note with id " + req.params.noteId
+                });
+            });
+    };
+
+    // Update a note identified by the noteId in the request
+    update = (req, res) => {
+        let id = req.params.noteId;
+        let title = req.body.title;
+        let content = req.body.content;
+        noteService.updateNote(id, title, content)
+            .then(note => {
+                res.send(note);
+            }).catch(err => {
+                if (err.kind === 'ObjectId') {
+                    logger.error("Error 404: Not found.");
+                    return res.status(404).send({
+                        message: "Note not found with id " + req.params.noteId
+                    });
+                }
+                logger.error("Error 500: Internal Server Error.");
+                return res.status(500).send({
+                    message: "Error updating note with id " + req.params.noteId
+                });
+            });
+    };
+
+    // Delete a note with the specified noteId in the request
+    delete = (req, res) => {
+        noteService.deleteNote(req.params.noteId)
+            .then(note => {
+                if (!note) {
+                    logger.error("Error 404: Note not found");
+                    return res.status(404).send({
+                        message: "Note not found with id " + req.params.noteId
+                    });
+                }
+                logger.info("Note deleted");
+                res.send({ message: "Note deleted successfully!" });
+            }).catch(err => {
+                if (err.kind === 'ObjectId' || err.name === 'NotFound') {
+                    return res.status(404).send({
+                        message: "Note not found with id " + req.params.noteId
+                    });
+                }
+                logger.error("Error 500: Internal Server Error.");
+                return res.status(500).send({
+                    message: "Could not delete note with id " + req.params.noteId
+                });
+            });
+    };
+}
+module.exports = new noteOperations();
