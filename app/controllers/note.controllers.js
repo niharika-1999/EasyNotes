@@ -4,7 +4,7 @@ const noteService = require('../service/note.service');
 class noteOperations {
     // Create and Save a new Note
     create = (req, res) => {
-        noteService.createANewNote(req.body.title || "Untitled Note", req.body.content)
+        noteService.createANewNote(req.body.title, req.body.content)
             .then(data => {
                 logger.info("New Entry Added.");
                 res.send(data);
@@ -18,7 +18,7 @@ class noteOperations {
 
     // Retrieve and return all notes from the database.
     findNotes = (req, res) => {
-        noteService.findNotes()
+        noteService.findAllNotes()
             .then(notes => {
                 logger.info(" Retrieving all notes from the database.");
                 res.send(notes);
@@ -32,7 +32,7 @@ class noteOperations {
 
     // Find a single note with a noteId
     findOne = (req, res) => {
-        noteService.findOneNote(req.params.noteId)
+        noteService.findOnlyOneNote(req.params.noteId)
             .then(note => {
                 if (!note) {
                     return res.status(404).send({
@@ -48,7 +48,7 @@ class noteOperations {
                     });
                 }
                 logger.error("Error 500: Internal Server Error.");
-                return res.status(500).send({
+                return res.status(200).send({
                     message: "Error retrieving note with id " + req.params.noteId
                 });
             });
@@ -59,7 +59,7 @@ class noteOperations {
         let id = req.params.noteId;
         let title = req.body.title;
         let content = req.body.content;
-        noteService.updateNote(id, title, content)
+        noteService.updateANote(id, title, content)
             .then(note => {
                 res.send(note);
             }).catch(err => {
@@ -70,7 +70,7 @@ class noteOperations {
                     });
                 }
                 logger.error("Error 500: Internal Server Error.");
-                return res.status(500).send({
+                return res.status(200).send({
                     message: "Error updating note with id " + req.params.noteId
                 });
             });
@@ -78,7 +78,7 @@ class noteOperations {
 
     // Delete a note with the specified noteId in the request
     delete = (req, res) => {
-        noteService.deleteNote(req.params.noteId)
+        noteService.deleteANote(req.params.noteId)
             .then(note => {
                 if (!note) {
                     logger.error("Error 404: Note not found");
@@ -95,7 +95,7 @@ class noteOperations {
                     });
                 }
                 logger.error("Error 500: Internal Server Error.");
-                return res.status(500).send({
+                return res.status(200).send({
                     message: "Could not delete note with id " + req.params.noteId
                 });
             });
