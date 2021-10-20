@@ -1,0 +1,59 @@
+{
+    "User schema": {
+      "userCreateAPI": {
+        "url": "/user",
+        "method": "POST",
+        "body": {
+          "firstName":"String",
+          "lastName":"String",
+          "email":"String",
+          "phNumber":"String"
+        },
+        "headers": {
+          "content-type": "json/application",
+          "authorization": "Bearer"
+        }
+      },
+      "userFindAllAPI": {
+        "url": "/user",
+        "method": "GET",
+        "body": null,
+        "headers": {
+          "content-type": "json/application",
+          "authorization": "Bearer"
+        }
+      },
+      "userFindOneAPI": {
+        "url": "/user/:userID",
+        "method": "GET",
+        "body": null,
+        "headers": {
+          "content-type": "json/application",
+          "authorization": "Bearer"
+        }
+      },
+      "userUpdateAPI": {
+        "url": "/user/:userID",
+        "method": "PUT",
+        "body": {
+          "firstName":"String",
+          "lastName":"String",
+          "email":"String",
+          "phNumber":"String"
+        },
+        "headers": {
+          "content-type": "json/application",
+          "authorization": "Bearer token"
+        }
+      },
+      "userDeleteAPI": {
+        "url": "/user/:userID",
+        "method":"DELETE",
+        "body": null,
+        "headers": {
+          "content-type": "json/application",
+          "authorization": "Bearer"
+        }
+      }
+    }
+  }

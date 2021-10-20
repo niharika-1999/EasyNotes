@@ -10,33 +10,50 @@ const NoteSchema = mongoose.Schema({
 const Note = mongoose.model('Note', NoteSchema);
 
 class noteModels {
-  createNote = (title, content) => {
+  createNote = (title, content, callback) => {
     const note = new Note({
       title: title,
       content: content,
     });
     // Save Note in the database
-    return note.save();
+    return note.save((err, data) => {
+      return err ? callback(err, null) : callback(null, data);
+    });
   };
 
   //To find all notes
-  findNotes = () => {
-    return Note.find();
+  findNotes = (callback) => {
+    return Note.find((err, data) => {
+      return err ? callback(err, null) : callback(null, data);
+    });
   }
 
   //query to find a single note
-  findOneNote = (findId) => {
-    return Note.findById(findId);
+  findOneNote = (findId, callback) => {
+    Note.findById(findId, (err, data) => {
+      return err ? callback(err, null) : callback(null, data);
+    });
   }
 
   // Find note and update it with the request body
-  updateNote = (findId, title, content) => {
-    return Note.findByIdAndUpdate(findId, { title: title, content: content }, { new: true });
+  updateNote = (findId, title, content, callback) => {
+    Note.findByIdAndUpdate(
+      findId,
+      {
+        title: title,
+        content: content,
+      },
+      { new: true },
+      (err, data) => {
+        return err ? callback(err, null) : callback(null, data);
+      });
   }
 
   //query to delete a note
-  deleteNote = (findId) => {
-    return Note.findByIdAndRemove(findId);
+  deleteNote = (findId, callback) => {
+    Note.findByIdAndRemove(findId, (err, data) => {
+      return err ? callback(err, null) : callback(null, data);
+    });
   }
 }
 

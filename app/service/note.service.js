@@ -1,33 +1,38 @@
 const noteModels = require('../models/note.model');
 
 class noteService {
-    createANewNote = (title, content) => {
-        noteModels.createNote(title, content);
-        return noteModels.createNote(title,content);
+    createANewNote = (body, callback) => {
+        noteModels.createNote(body.title, body.content, (err,data)=>{
+            return err ? callback(err, null) : callback(null, data);
+        });
     }
 
     //query to find all notes
-    findAllNotes = () => {
-        noteModels.findNotes();
-        return noteModels.findNotes();
+    findAllNotes = (callback) => {
+        noteModels.findNotes((err,data) => {
+            return err ? callback(err, null) : callback(null, data);
+        });  
     }
 
     //query to find a single note
-    findOnlyOneNote = (findId) => {
-        noteModels.findOneNote(findId);
-        return noteModels.findOneNote(findId);
+    findOnlyOneNote = (findId, callback) => {
+        noteModels.findOneNote(findId, (err, data) => {
+            return err ? callback(err, null) : callback(null, data);
+        });
     }
 
     // Find note and update it with the request body
-    updateANote = (findId, title, content) => {
-        noteModels.updateNote(findId, { title: title, content: content }, { new: true });
-        return noteModels.updateNote(findId, title, content);
+    updateANote = (findId, body, callback) => {
+        noteModels.updateNote(findId, body.title, body.content, (err,data) => {
+            return err ? callback(err, null) : callback(null, data);
+        });
     }
 
     //query to delete a note
-    deleteANote = (findId) => {
-        noteModels.deleteNote(findId);
-        return noteModels.deleteNote(findId);
+    deleteANote = (findId, callback) => {
+        noteModels.deleteNote(findId, (err,data) => {
+            return err ? callback(err, null) : callback(null, data);
+        });
     }
 }
 

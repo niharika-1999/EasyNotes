@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const userOperations = require('../controllers/user.controllers');
+const userOperations = require('../controllers/users/user.controller');
 const validateName = require('../middleware/user.middleware');
 const { body } = require("express-validator");
+
+//User Login
+router.post("/login", userOperations.loginUser);
 
 // Create a new user
 router.post('/',

@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const routeUsers = require('./app/routes/user.routes');
 const routeNotes = require('./app/routes/note.routes');
 const dbConnect = require('./config/dbConnect');
-const logger = require('./winstonLogger.js');
+const logger = require('./config/winstonLogger');
 
 const app = express();
 

@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const noteOperations = require('../controllers/note.controllers');
-const validateTitle = require('../middleware/note.middleware');
+const noteOperations = require('../controllers/notes/note.controller');
+const noteValidation = require('../middleware/note.middleware');
 
 // Create a new Note
-router.post('/notes', validateTitle, noteOperations.create);
+router.post('/', noteValidation.ensureToken, noteValidation.validate, noteOperations.create);
 
 // Retrieve all Notes
-router.get('/notes', noteOperations.findNotes);
+router.get('/', noteValidation.ensureToken, noteOperations.findNotes);
 
 // Retrieve a single Note with noteId
-router.get('/notes/:noteId', noteOperations.findOne);
+router.get('/:noteId', noteValidation.ensureToken, noteOperations.findOne);
 
 // Update a Note with noteId
-router.put('/notes/:noteId', validateTitle, noteOperations.update);
+router.put('/:noteId', noteValidation.ensureToken, noteValidation.validate, noteOperations.update);
 
 // Delete a Note with noteId
-router.delete('/notes/:noteId', noteOperations.delete);
+router.delete('/:noteId', noteValidation.ensureToken, noteOperations.delete);
 
 module.exports = router;
