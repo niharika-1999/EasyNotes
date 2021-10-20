@@ -7,7 +7,7 @@ exports.generateToken = (email) => {
       email: email,
     },
     process.env.mySecretKey,
-    { expiresIn: "23h" }
+    { expiresIn: "1h" }
   );
 };
 
