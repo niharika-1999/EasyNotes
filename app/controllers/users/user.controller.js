@@ -63,8 +63,8 @@ class userOperations {
 
     // Find a single user with a userId
     findOneUser = (req, res) => {
-        let id = req.params.userId;
-        userService.findOnlyOneUser(id, (err, data) => {
+        let email = req.params.userId;
+        userService.findOnlyOneUser(email, (err, data) => {
             if (err) {
                 logger.error(err);
                 if (err.kind === "ObjectId") {
@@ -80,7 +80,7 @@ class userOperations {
                 responseObject = dtoObj.userApiFindFailure;
                 res.send(responseObject);
             }
-            logger.info("Retrieval Successful");
+            logger.info("Successfully retrieved");
             responseObject = dtoObj.userApiSuccess;
             responseObject.message = data;
             res.send(responseObject);
@@ -142,6 +142,33 @@ class userOperations {
             responseObject.message = "Deleted successfully";
             res.send(responseObject);
         });
+    };
+
+    //If the user forgets password
+    forgotPassword = (req, res) => {
+        let email = req.body.email;
+        userService
+            .forgotPassword(email)
+            .then((data) => { res.send("Result:" + data); })
+            .catch((err) => {
+                console.log("error:" + err);
+                res.send(err);
+            });
+    };
+
+    //Reset Password
+    resetPassword = (req, res) => {
+        let token = req.params.token;
+        let password = req.body.password;
+        userService
+            .resetPassword(token, password)
+            .then((data) => {
+                res.json({ message: "Password updated successfully", "Result:": data });
+            })
+            .catch((err) => {
+                console.log("error:" + err);
+                res.send(err);
+            });
     };
 }
 module.exports = new userOperations();

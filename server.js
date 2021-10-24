@@ -4,6 +4,8 @@ const routeUsers = require('./app/routes/user.routes');
 const routeNotes = require('./app/routes/note.routes');
 const dbConnect = require('./config/dbConnect');
 const logger = require('./config/winstonLogger');
+const swagger = require('swagger-ui-express');
+const swaggerDoc = require('./swagger.json');
 
 const app = express();
 
@@ -12,6 +14,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/notes', routeNotes);
 app.use('/users', routeUsers);
+
+app.use('/api-docs', swagger.serve, swagger.setup(swaggerDoc));
 
 // define a simple route
 app.get('/', (req, res) => {

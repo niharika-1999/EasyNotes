@@ -11,7 +11,7 @@
         },
         "headers": {
           "content-type": "json/application",
-          "authorization": "Bearer"
+          "authorization": "Bearer 'token'"
         }
       },
       "userFindAllAPI": {
@@ -20,20 +20,20 @@
         "body": null,
         "headers": {
           "content-type": "json/application",
-          "authorization": "Bearer"
+          "authorization": "Bearer 'token'"
         }
       },
       "userFindOneAPI": {
-        "url": "/user/:userID",
+        "url": "/user/:userId",
         "method": "GET",
         "body": null,
         "headers": {
           "content-type": "json/application",
-          "authorization": "Bearer"
+          "authorization": "Bearer 'token'"
         }
       },
       "userUpdateAPI": {
-        "url": "/user/:userID",
+        "url": "/user/:userId",
         "method": "PUT",
         "body": {
           "firstName":"String",
@@ -43,16 +43,50 @@
         },
         "headers": {
           "content-type": "json/application",
-          "authorization": "Bearer token"
+          "authorization": "Bearer 'token'"
         }
       },
       "userDeleteAPI": {
-        "url": "/user/:userID",
+        "url": "/user/:userId",
         "method":"DELETE",
         "body": null,
         "headers": {
           "content-type": "json/application",
-          "authorization": "Bearer"
+          "authorization": "Bearer 'token'"
+        }
+      },
+      "userLoginAPI": {
+        "url": "/user/login",
+        "method": "POST",
+        "body": {
+          "Email": "String",
+          "password": "String"
+        },
+        "headers": {
+          "content-type": "json/application",
+          "authorization": "Bearer 'token'"
+        }
+      },
+      "userForgotPasswordAPI": {
+        "url": "/user/forgot",
+        "method": "POST",
+        "body": {
+          "email": "String"
+        },
+        "headers": {
+          "content-type": "json/application",
+          "authorization": "Bearer 'token'"
+        }
+      },
+      "userResetPasswordAPI": {
+        "url": "/user/reset/:token",
+        "method": "POST",
+        "body": {
+          "password": "String"
+        },
+        "headers": {
+          "content-type": "json/application",
+          "authorization": "Bearer 'token'"
         }
       }
     }

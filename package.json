@@ -17,6 +17,7 @@
   "author": "\"callicoder\"",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -27,6 +28,7 @@
     "nodemailer": "^6.7.0",
     "nodemon": "^2.0.13",
     "swagger": "^0.7.5",
+    "swagger-ui-express": "^4.1.6",
     "winston": "^3.3.3"
   }
 }

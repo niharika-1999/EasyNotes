@@ -44,4 +44,10 @@ router.put('/:userId',
 // Delete a user with userId
 router.delete('/:userId', userOperations.delete);
 
+//forgot password route
+router.post("/forgot", userOperations.forgotPassword);
+
+//email password reset route
+router.post("/reset/:token", userOperations.resetPassword);
+
 module.exports = router;

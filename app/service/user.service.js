@@ -1,5 +1,7 @@
 const userModels = require('../models/user.model');
 const jwtHelper = require("../../utils/jwt");
+const mailer = require("../../utils/nodeMailer");
+const bcrypt = require("bcrypt");
 
 class userService {
     loginUser = (object, callback) => {
@@ -7,7 +9,7 @@ class userService {
             if (err) {
                 return callback(err, null);
             } else {
-                if (object.password == data.password) {
+                if (bcrypt.compareSync(object.password, data.password)) {
                     var token = jwtHelper.generateToken(object.email);
                     var result = data + "Token:" + token;
                     return callback(null, result);
@@ -50,6 +52,31 @@ class userService {
         userModels.deleteUser(findId, (err, data) => {
             return err ? callback(err, null) : callback(null, data);
         });
+    }
+
+    //Forgot password
+    forgotPassword = (email) => {
+        return userModels.forgotPassword(email)
+            .then((data) => {
+                return mailHelper
+                    .mailer(data.email, data.resetPasswordToken)
+                    .then((data) => {
+                        return data;
+                    })
+                    .catch((err) => {
+                        throw err;
+                    });
+            })
+            .catch((err) => {
+                throw err;
+            });
+    }
+
+    //Reset password
+    resetPassword = (token, password) => {
+        return userModels.resetPassword(token, password)
+            .then(data => { return data; })
+            .catch(err => { throw err; })
     }
 }
 
