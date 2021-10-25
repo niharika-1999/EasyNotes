@@ -26,7 +26,7 @@ class userOperations {
     createUser = (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            responseObject = dtoObject.userApiFailure;
+            responseObject = dtoObj.userApiFailure;
             responseObject.message = errors.array();
             res.send(responseObject);
         }
@@ -151,7 +151,6 @@ class userOperations {
             .forgotPassword(email)
             .then((data) => { res.send("Result:" + data); })
             .catch((err) => {
-                console.log("error:" + err);
                 res.send(err);
             });
     };

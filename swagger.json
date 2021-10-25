@@ -21,7 +21,7 @@
     "consumes": ["application/json"],
     "produces": ["application/json"],
     "paths": {
-      "/user/login": {
+      "/users/login": {
         "post": {
           "tags": ["Users"],
           "summary": "User login",
@@ -47,7 +47,7 @@
           }
         }
       },
-      "/user": {
+      "/users": {
         "get": {
           "tags": ["Users"],
           "summary": "Get all users in system",
@@ -85,7 +85,7 @@
           }
         }
       },
-      "/user/{userID}": {
+      "/users/{userId}": {
         "parameters": [
           {
             "name": "userId",

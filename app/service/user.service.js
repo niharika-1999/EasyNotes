@@ -1,6 +1,6 @@
 const userModels = require('../models/user.model');
 const jwtHelper = require("../../utils/jwt");
-const mailer = require("../../utils/nodeMailer");
+const emailer = require("../../utils/nodeMailer");
 const bcrypt = require("bcrypt");
 
 class userService {
@@ -10,8 +10,8 @@ class userService {
                 return callback(err, null);
             } else {
                 if (bcrypt.compareSync(object.password, data.password)) {
-                    var token = jwtHelper.generateToken(object.email);
-                    var result = data + "Token:" + token;
+                    var token = jwtHelper.generateToken(data._id);
+                    var result = {"data":data,"Token":token};
                     return callback(null, result);
                 } else {
                     return callback("Mismatch in Password");
@@ -34,8 +34,8 @@ class userService {
     }
 
     //query to find a single user
-    findOnlyOneUser = (findId, callback) => {
-        userModels.findOneUser(findId, (err, data) => {
+    findOnlyOneUser = (email, callback) => {
+        userModels.findOneUser(email, (err, data) => {
             return err ? callback(err, null) : callback(null, data);
         });
     }
@@ -58,7 +58,7 @@ class userService {
     forgotPassword = (email) => {
         return userModels.forgotPassword(email)
             .then((data) => {
-                return mailHelper
+                return emailer
                     .mailer(data.email, data.resetPasswordToken)
                     .then((data) => {
                         return data;

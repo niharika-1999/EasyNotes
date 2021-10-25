@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwtHelper = require("../../utils/jwt");
 
+
 const UserSchema = mongoose.Schema({
     firstName: {type: String, required: true}, 
     lastName: {type: String},
@@ -9,6 +10,7 @@ const UserSchema = mongoose.Schema({
     phNumber: {type: String, required: true},
     password: {type: String},
     resetPasswordToken: {type: String},
+    resetPasswordExpires: Date,
 }, {
     timestamps: true
 });
@@ -21,12 +23,12 @@ class userModels {
     //user login
     loginUser = (object, callback) => {
         return User.findOne({ email: object.email }, (err, data) => {
-            return err ? callback(err, null) : data == null ? callback("Email ID isn't present", null) : callback(null, data);;
+            return err ? callback(err, null) : data == null ? callback("Email ID isn't present", null) : callback(null, data);
         });
     };
 
     //To register an user
-    createUser = (object) => {
+    createUser = (object,callback) => {
         encryptPassword = bcrypt.hashSync(object.password, 10);
         const newUser = new User({
             firstName: object.firstName,
@@ -78,9 +80,12 @@ class userModels {
                 if (!data) {
                     throw "Email not found";
                 } else {
-                    let token = jwtHelper.generateToken();
-                    data.resetPasswordToken = token;
-                    return data.save().then((data) => { return data; }).catch((err) => { throw err; });
+                    let randomToken = jwtHelper.generateRandomCode();
+                    data.resetPasswordToken = randomToken;
+                    data.resetPasswordExpires = Date.now() + 3600000;
+                    return data.save()
+                        .then((res) => { return res; })
+                        .catch((err) => { throw err; });
                 }
             })
             .catch((err) => {
@@ -91,14 +96,15 @@ class userModels {
     //reset password
     resetPassword = (token, newPassword) => {
         return User
-            .findOne({ resetPasswordToken: token })
+            .findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() }, })
             .then((data) => {
                 if (!data) {
                     throw "Token not found";
                 } else {
                     encryptPassword = bcrypt.hashSync(newPassword, 10);
                     (data.password = encryptPassword),
-                        (data.resetPasswordToken = undefined);
+                        (data.resetPasswordToken = undefined),
+                        (data.resetPasswordExpires = undefined);
                     return data.save()
                         .then((data) => { return data; })
                         .catch((err) => { throw err; });

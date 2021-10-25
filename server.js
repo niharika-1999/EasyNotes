@@ -19,7 +19,7 @@ app.use('/api-docs', swagger.serve, swagger.setup(swaggerDoc));
 
 // define a simple route
 app.get('/', (req, res) => {
-    res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
+    res.json({"message": "Welcome to FundooNotes application. Take notes quickly. Organize and keep track of all your notes."});
 });
 
 // listen for requests

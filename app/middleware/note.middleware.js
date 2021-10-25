@@ -24,7 +24,7 @@ class noteValidation {
     ensureToken = (req, res, next) => {
         const bearerHeader = req.headers["authorization"];
         if (!bearerHeader) {
-            res.send("Token is empty");
+            res.send("Empty Token.");
         }
         const bearer = bearerHeader.split(" ");
         const token = bearer[1];
@@ -32,6 +32,7 @@ class noteValidation {
             if (err) {
                 res.send(err);
             }
+            req.body.userId = data._id;
             next();
         });
     };
