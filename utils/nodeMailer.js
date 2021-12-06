@@ -1,6 +1,11 @@
 var nodemailer = require("nodemailer");
 require('dotenv').config();
 
+/**
+ * @description sends mail to user
+ * @returns error or data
+ */
+
 class nodeMailer {
   mailer = (email, token) => {
     var transporter = nodemailer.createTransport({
@@ -15,7 +20,7 @@ class nodeMailer {
       from: "niharikarao.nr19@gmail.com",
       to: email,
       subject: "Sending Sample Email using Node.js",
-      html: `<a href='http://localhost:3000/users/reset/${token}'>Hello,Click link to reset password.</a>`,
+      html: `<a href='http://localhost:3000/reset/${token}'>click here</a>`,
       text: "Password reset",
     };
 

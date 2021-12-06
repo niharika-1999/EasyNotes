@@ -1,3 +1,9 @@
+/**
+ * @file            : user.controller.js
+ * @author          : Niharika Rao
+ * @since           : 15-10-2021
+ */
+
 const logger = require('../../../config/winstonLogger');
 const userService = require('../../service/user.service');
 const {validationResult} = require('express-validator');
@@ -5,7 +11,12 @@ const dtoObj = require("./user.responseSchema");
 let responseObject;
 
 class userOperations {
-    //For user to login
+   /**
+   * @description handles request response for authenticating the user
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Object} responseObject
+   */
     loginUser = (req, res) => {
         let object = req.body;
         userService.loginUser(object, (err, data) => {
@@ -18,17 +29,22 @@ class userOperations {
             logger.info("Successfully logged in");
             responseObject = dtoObj.userApiSuccess;
             responseObject.message = data;
-            res.send(responseObject);
+            return res.send(responseObject);
         });
     };
 
-    // Create and Save a new user
+    /**
+   * @description Creates and saves the new user
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Object} responseObject
+   */
     createUser = (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             responseObject = dtoObj.userApiFailure;
             responseObject.message = errors.array();
-            res.send(responseObject);
+            return res.send(responseObject);
         }
         let object = req.body;
         userService.createANewUser(object, (err, data) => {
@@ -36,32 +52,40 @@ class userOperations {
                 logger.error(err);
                 responseObject = dtoObj.userApiFailure;
                 responseObject.message = err.message;
-                res.send(responseObject);
+                return res.send(responseObject);
             }
             logger.info("Registeration Successful");
             responseObject = dtoObj.userApiSuccess;
             responseObject.message = data;
-            res.send(responseObject);
+            return res.send(responseObject);
         });
     };
-
-    // Retrieve and return all users from the database.
+    /**
+   * @description Retrieve and return all users from the database.
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Object} responseObject
+   */
     findAll = (req, res) => {
         userService.findAllUsers((err, data) => {
             if (err) {
               logger.error(err);
               responseObject = dtoObj.userApiFailure;
               responseObject.message = err.message;
-              res.send(responseObject);
+              return res.send(responseObject);
             }
             logger.info("Successfully retrived all the users.");
             responseObject = dtoObj.userApiSuccess;
             responseObject.message = data;
-            res.send(responseObject);
+            return res.send(responseObject);
           });
     };
-
-    // Find a single user with a userId
+    /**
+   * @description Find a single user with a userId
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Object} responseObject
+   */
     findOneUser = (req, res) => {
         let email = req.params.userId;
         userService.findOnlyOneUser(email, (err, data) => {
@@ -70,24 +94,27 @@ class userOperations {
                 if (err.kind === "ObjectId") {
                     responseObject = dtoObj.userApiFindFailure;
                     responseObject.message = err.message;
-                    res.send(responseObject);
+                    return res.send(responseObject);
                 }
                 responseObject = dtoObj.userApiFailure;
                 responseObject.message = err.message;
-                res.send(responseObject);
+                return res.send(responseObject);
             }
             if (!data) {
                 responseObject = dtoObj.userApiFindFailure;
-                res.send(responseObject);
+                return res.send(responseObject);
             }
             logger.info("Successfully retrieved");
             responseObject = dtoObj.userApiSuccess;
             responseObject.message = data;
-            res.send(responseObject);
+            return res.send(responseObject);
         });
     };
-
-    // Update a user detail identified by the userId in the request
+     /**
+   * @description Update a user detail identified by the userId in the request
+   * @param {Object} req
+   * @param {Object} res
+   */
     update = (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -101,24 +128,27 @@ class userOperations {
                 if (err.kind === "ObjectId") {
                     responseObject = dtoObj.userApiFindFailure;
                     responseObject.message = err.message;
-                    res.send(responseObject);
+                    return res.send(responseObject);
                 }
                 responseObject = dtoObj.userApiFailure;
                 responseObject.message = err.message;
-                res.send(responseObject);
+                return res.send(responseObject);
             }
             if (!data) {
                 responseObject = dtoObj.userApiFindFailure;
-                res.send(responseObject);
+                return res.send(responseObject);
             }
             logger.info("Succesfully updated");
             responseObject = dtoObj.userApiSuccess;
             responseObject.message = "Succesfully updated";
-            res.send(responseObject);
+            return res.send(responseObject);
         });
     };
-
-    // Delete a note with the specified noteId in the request
+    /**
+   * @description Delete a note with the specified noteId in the request
+   * @param {Object} req
+   * @param {Object} res
+   */
     delete = (req, res) => {
         let id = req.params.userId;
         userService.deleteAUser(id, (err, data) => {
@@ -127,11 +157,11 @@ class userOperations {
                 if (err.kind === "ObjectId") {
                     responseObject = dtoObj.userApiFindFailure;
                     responseObject.message = err.message;
-                    res.send(responseObject);
+                    return res.send(responseObject);
                 }
                 responseObject = dtoObj.userApiFailure;
                 responseObject.message = err.message;
-                res.send(responseObject);
+                return res.send(responseObject);
             }
             if (!data) {
                 responseObject = dtoObj.userApiFindFailure;
@@ -140,11 +170,15 @@ class userOperations {
             logger.info("Deleted succesfully");
             responseObject = dtoObj.userApiSuccess;
             responseObject.message = "Deleted successfully";
-            res.send(responseObject);
+            return res.send(responseObject);
         });
     };
 
-    //If the user forgets password
+    /**
+   * @description handles request response for forgot password route
+   * @param {Object} req
+   * @param {Object} res
+   */
     forgotPassword = (req, res) => {
         let email = req.body.email;
         userService
@@ -155,7 +189,11 @@ class userOperations {
             });
     };
 
-    //Reset Password
+    /**
+   * @description handles request response for password reset
+   * @param {Object} req
+   * @param {Object} res
+   */
     resetPassword = (req, res) => {
         let token = req.params.token;
         let password = req.body.password;

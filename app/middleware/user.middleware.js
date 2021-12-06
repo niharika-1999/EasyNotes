@@ -1,5 +1,16 @@
+/**
+ * @file            : user.middleware.js
+ * @author          : Niharika Rao
+ * @since           : 15-10-2021
+ */
+
 class userMiddleware {
-    //Middleware to validate the name and email ID
+    /**
+     * @description Middleware to validate the name and email ID
+     * @param {Object} req 
+     * @param {Object} res 
+     * @param {Object} next 
+     */
     userValidation = (req, res, next) => {
         var regexPatternName = new RegExp("^[A-Z][a-zA-Z]{2,}");
         if ((!regexPatternName.test(req.body.firstName)) && (!regexPatternName.test(req.body.lastName))) {
@@ -11,12 +22,6 @@ class userMiddleware {
         if (!emailRegex.test(req.body.email)) {
             return res.status(400).send({
                 message: "Please enter a valid email ID.",
-            });
-        }
-        var phNumberRegex = RegExp("^91 [1-9][0-9]{9}$");
-        if (!phNumberRegex.test(req.body.phNumber)) {
-            return res.status(400).send({
-                message: "Please enter a valid contact number.",
             });
         }
         next();

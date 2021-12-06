@@ -1,9 +1,19 @@
+/**
+ * @file            : note.model.js
+ * @author          : Niharika Rao
+ * @since           : 15-10-2021
+ */
 const mongoose = require('mongoose');
 
 const NoteSchema = mongoose.Schema({
   title: String,
   content: String,
-  userId: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  color: String,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  isTrash:Boolean,
+  profileImg: {
+    type: String
+  } 
 }, {
   timestamps: true
 });
@@ -11,31 +21,40 @@ const NoteSchema = mongoose.Schema({
 const Note = mongoose.model('Note', NoteSchema);
 
 class noteModels {
-  createNote = (title, content, userId, callback) => {
+   /**
+   * @description  To create a note and save in database
+   * @returns result of callback
+   */
+  createNote = (title, content, userId,filename,callback) => {
     const note = new Note({
       title: title,
       content: content,
       userId: userId,
+      isTrash:false,
+      profileImg:filename, 
     });
-    // Save Note in the database
-    return note.save((err, data) => {
-      return err ? callback(err, null) : callback(null, data);
+    return note.save((err,data) => {
+      return err? callback(err,null):callback(null,data);
     });
   };
 
-  //To find all notes
-  findNotes = (userId, callback) => {
-    return Note.find({ userId: userId })
-      .populate({
-        path: "userId",
-        select: ["firstName", "lastName", "email", "phNumber"],
-      })
-      .exec((error, data) => {
-        return error ? callback(error, null) : callback(null, data);
-      });
-  };
+   /**
+   * @description To find all notes
+   * @param {String} userId
+   */
+  findNotes = (userId) => {
+    return Note.find({userId: userId})
+    .populate({
+      path: "userId",
+      select: ["firstName", "lastName", "email"]
+  });
+};
 
-  //query to find a single note
+  /**
+   * @description To find one specific note
+   * @param {String} userId
+   * @param {String} findId
+   */
   findOneNote = (userId, findId, callback) => {
     return Note.findOne({ userId: userId, _id: findId }, (error, data) => {
       if (error) {
@@ -48,40 +67,35 @@ class noteModels {
       }
     });
   }
-
-  // Find note and update it with the request body
-  updateNote = (userId, findId, body, callback) => {
-    Note.findByIdAndUpdate(
+  /**
+   * @description Find note and update it with the request body
+   * @param {String} userId
+   * @param {String} findId
+   * @param {String} body
+   * @param {Boolean} trash
+   * @param {String} filename
+   */
+  updateNote = (userId, findId, body,trash,color,filename) => {
+    return Note.findByIdAndUpdate(
       { userId: userId, _id: findId },
       {
         title: body.title,
         content: body.content,
+        isTrash:trash,
+        color:color,
+        profileImg:filename
       },
-      { new: true },
-      (error, data) => {
-        if (error) {
-          return callback(error, null);
-        }
-        if (!data) {
-          return callback("You dont have access to this note", null);
-        } else {
-          return callback(null, data);
-        }
-      });
-  }
+      { new: true });
+      };
 
-  //query to delete a note
-  deleteNote = (userId, findId, callback) => {
-    Note.findByIdAndRemove({ userId: userId, _id: findId }, (error, data) => {
-      if (error) {
-        return callback(error, null);
-      }
-      if (!data) {
-        return callback("You dont have access to this note", null);
-      } else {
-        return callback(null, data);
-      }
-    });
+  /**
+   * @description Query to find and remove a note
+   * @param {String} findId
+   * @param {String} userId
+   */
+  deleteNote = (userId, findId) => {
+    return Note.findByIdAndRemove({ userId: userId, _id: findId }) 
+    
   }
 }
 

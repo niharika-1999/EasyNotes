@@ -1,3 +1,8 @@
+/**
+ * @file            : user.service.js
+ * @author          : Niharika Rao
+ * @since           : 15-10-2021
+ */
 const userModels = require('../models/user.model');
 const jwtHelper = require("../../utils/jwt");
 const emailer = require("../../utils/nodeMailer");

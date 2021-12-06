@@ -16,9 +16,6 @@ router.post('/',
         .matches("^[A-Z][a-zA-Z]{2,}")
         .withMessage("Please enter a valid name with first letter capital."),
     body("email").isEmail().withMessage("Enter a valid Email"),
-    body("phNumber")
-        .matches("^91 [1-9][0-9]{9}$")
-        .withMessage("Please enter a valid contact number."),
     userOperations.createUser);
 
 // Retrieve all users
@@ -36,9 +33,6 @@ router.put('/:userId',
         .matches("^[A-Z][a-zA-Z]{2,}")
         .withMessage("Please enter a valid name with first letter capital."),
     body("email").isEmail().withMessage("Enter a valid Email"),
-    body("phNumber")
-        .matches("^91 [1-9][0-9]{9}$")
-        .withMessage("Please enter a valid contact number."),
     userOperations.update);
 
 // Delete a user with userId
