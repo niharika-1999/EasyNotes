@@ -1,3 +1,8 @@
+/*
+ * @file            : label.routes.js
+ * @author          : Niharika Rao
+ * @since           : 08-12-2021
+ */
 const express = require("express");
 const labelRouter = express.Router(); 
 const labels = require("../controllers/labels/labels.controller");

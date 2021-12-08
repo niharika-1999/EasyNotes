@@ -1,3 +1,8 @@
+/*
+ * @file            : label.service.js
+ * @author          : Niharika Rao
+ * @since           : 08-12-2021
+ */
 const labelModel = require("../models/label.model");
 
 class LabelService {

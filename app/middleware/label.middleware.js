@@ -1,3 +1,8 @@
+/**
+ * @file            : label.middleware.js
+ * @author          : Niharika Rao
+ * @since           : 08-12-2021
+ */
 const jwtHelper = require("../../utils/jwt");
 //Check and validate title
 const labelValidate = (req, res, next) => {

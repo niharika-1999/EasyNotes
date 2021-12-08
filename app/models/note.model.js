@@ -55,18 +55,10 @@ class noteModels {
    * @param {String} userId
    * @param {String} findId
    */
-  findOneNote = (userId, findId, callback) => {
-    return Note.findOne({ userId: userId, _id: findId }, (error, data) => {
-      if (error) {
-        return callback(error, null);
-      }
-      if (!data) {
-        return callback("You can't access this note", null);
-      } else {
-        return callback(null, data);
-      }
-    });
-  }
+   findOneNote = (userId, findId) => {
+    return Note.findOne({ userId: userId, _id: findId });
+  };
+
   /**
    * @description Find note and update it with the request body
    * @param {String} userId
@@ -94,9 +86,9 @@ class noteModels {
    * @param {String} userId
    */
   deleteNote = (userId, findId) => {
-    return Note.findByIdAndRemove({ userId: userId, _id: findId }) 
+    return Note.findByIdAndRemove({ userId: userId, _id: findId });
     
-  }
+  };
 }
 
 module.exports = new noteModels();

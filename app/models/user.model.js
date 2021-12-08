@@ -64,7 +64,7 @@ class userModels {
         return User.find((err, data) => {
             return err ? callback(err, null) : callback(null, data);
         });
-    }
+    };
 
      /**
    * @description To find one single user
@@ -72,12 +72,9 @@ class userModels {
    * @param {callback} callback
    * @returns error or callback
    */
-    findOneUser = (email, callback) => {
-        User.findById({ email: email }, (err, data) => {
-            return err ? callback(err, null) : callback(null, data);
-        });
-    }
-
+      findOneUser = (findId) => {
+        return User.findById(findId)
+      };
     /**
    * @description To find and update the user details
    * @param {String} findId
@@ -90,7 +87,7 @@ class userModels {
             (err, data) => {
                 return err ? callback(err, null) : callback(null, data);
             });
-    }
+    };
 
     /**
    * @description To find and remove an user id as a parameter
@@ -102,7 +99,7 @@ class userModels {
         User.findByIdAndRemove(findId, (err, data) => {
             return err ? callback(err, null) : callback(null, data);
         });
-    }
+    };
 
     /**
    * @description Forgot password creates token if email id is found

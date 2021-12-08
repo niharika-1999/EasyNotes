@@ -19,6 +19,7 @@ class userOperations {
    */
     loginUser = (req, res) => {
         let object = req.body;
+        console.log(object);
         userService.loginUser(object, (err, data) => {
             if (err) {
                 logger.error(err);
@@ -86,30 +87,26 @@ class userOperations {
    * @param {Object} res
    * @param {Object} responseObject
    */
-    findOneUser = (req, res) => {
-        let email = req.params.userId;
-        userService.findOnlyOneUser(email, (err, data) => {
-            if (err) {
-                logger.error(err);
-                if (err.kind === "ObjectId") {
-                    responseObject = dtoObj.userApiFindFailure;
-                    responseObject.message = err.message;
-                    return res.send(responseObject);
-                }
-                responseObject = dtoObj.userApiFailure;
-                responseObject.message = err.message;
-                return res.send(responseObject);
-            }
-            if (!data) {
-                responseObject = dtoObj.userApiFindFailure;
-                return res.send(responseObject);
-            }
-            logger.info("Successfully retrieved");
+     findOneUser = (req, res) => {
+        let findId = req.params.userId;
+        userService
+          .findOnlyOneUser(findId)
+          .then((data) => {
             responseObject = dtoObj.userApiSuccess;
             responseObject.message = data;
-            return res.send(responseObject);
-        });
-    };
+            res.send(responseObject);
+          })
+          .catch((err) => {
+            if (err.kind === "ObjectId") {
+              logger.error("user not found with id");
+              responseObject = dtoObj.userApiFindFailure;
+              res.send(responseObject);
+            }
+            responseObject = dtoObj.userApiFailure;
+            responseObject.message = err.message;
+            res.send(responseObject);
+          });
+      };
      /**
    * @description Update a user detail identified by the userId in the request
    * @param {Object} req
@@ -183,9 +180,9 @@ class userOperations {
         let email = req.body.email;
         userService
             .forgotPassword(email)
-            .then((data) => { res.send("Result:" + data); })
+            .then((data) => { return res.send("Result:" + data); })
             .catch((err) => {
-                res.send(err);
+                return res.send(err);
             });
     };
 
@@ -204,7 +201,7 @@ class userOperations {
             })
             .catch((err) => {
                 console.log("error:" + err);
-                res.send(err);
+                return res.send(err);
             });
     };
 }

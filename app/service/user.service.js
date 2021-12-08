@@ -29,28 +29,27 @@ class userService {
         userModels.createUser(object, (err, data) => {
             return err ? callback(err, null) : callback(null, data);
         });
-    }
+    };
 
     //query to find all users
     findAllUsers = (callback) => {
         userModels.findUser((err, data) => {
             return err ? callback(err, null) : callback(null, data);
         });
-    }
+    };
 
     //query to find a single user
-    findOnlyOneUser = (email, callback) => {
-        userModels.findOneUser(email, (err, data) => {
-            return err ? callback(err, null) : callback(null, data);
-        });
-    }
+    findOnlyOneUser = (findId) => {
+        return userModels.findOneUser(findId);
+      };
+    
 
     // Find an user and update his/her details with the request body
     updateAUser = (findId, object, callback) => {
         userModels.updateUser(findId, object, (err, data) => {
             return err ? callback(err, null) : callback(null, data);
         });
-    }
+    };
 
     //query to delete an user
     deleteAUser = (findId, callback) => {
@@ -75,7 +74,7 @@ class userService {
             .catch((err) => {
                 throw err;
             });
-    }
+    };
 
     //Reset password
     resetPassword = (token, password) => {
